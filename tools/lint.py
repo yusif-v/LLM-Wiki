@@ -11,6 +11,8 @@ WIKI_DIR = BASE / "wiki"
 RAW_DIR = BASE / "raw"
 SOURCES_DIR = WIKI_DIR / "sources"
 CONCEPTS_DIR = WIKI_DIR / "concepts"
+ENTITIES_DIR = WIKI_DIR / "entities"
+SYNTHESES_DIR = WIKI_DIR / "syntheses"
 
 LINK_RE = re.compile(r"\[\[([^\]|#]+)")
 
@@ -41,15 +43,27 @@ def check_unsummarized_sources():
     return [str(f.relative_to(BASE)) for f in raw_files if slugify(f.stem) not in summarized]
 
 
-def check_orphan_concepts():
+def check_orphans():
     all_text = ""
     for md in WIKI_DIR.rglob("*.md"):
         all_text += md.read_text(errors="ignore")
     orphans = []
-    for concept in CONCEPTS_DIR.glob("*.md"):
-        if f"[[concepts/{concept.stem}]]" not in all_text and f"[[{concept.stem}]]" not in all_text:
-            orphans.append(str(concept.relative_to(BASE)))
+    for directory, label in [(CONCEPTS_DIR, "concepts"), (ENTITIES_DIR, "entities"), (SYNTHESES_DIR, "syntheses")]:
+        for page in directory.glob("*.md"):
+            if f"[[{label}/{page.stem}]]" not in all_text and f"[[{page.stem}]]" not in all_text:
+                orphans.append(str(page.relative_to(BASE)))
     return orphans
+
+
+def check_low_confidence():
+    issues = []
+    conf_re = re.compile(r"confidence:\s*(low)", re.IGNORECASE)
+    for directory in [CONCEPTS_DIR, ENTITIES_DIR, SYNTHESES_DIR]:
+        for md in directory.glob("*.md"):
+            text = md.read_text(errors="ignore")
+            if conf_re.search(text):
+                issues.append(f"  {md.relative_to(BASE)}")
+    return issues
 
 
 def main():
@@ -65,12 +79,17 @@ def main():
     for u in unsummarized or ["  none"]:
         print(f"  {u}")
 
-    orphans = check_orphan_concepts()
-    print(f"\nOrphan concepts ({len(orphans)}):")
+    orphans = check_orphans()
+    print(f"\nOrphan pages ({len(orphans)}):")
     for o in orphans or ["  none"]:
         print(f"  {o}")
 
-    total_issues = len(dead) + len(unsummarized) + len(orphans)
+    low_conf = check_low_confidence()
+    print(f"\nLow confidence pages ({len(low_conf)}):")
+    for l in low_conf or ["  none"]:
+        print(l)
+
+    total_issues = len(dead) + len(unsummarized) + len(orphans) + len(low_conf)
     score = max(0, 10 - total_issues)
     print(f"\nHealth score: {score}/10  (issues found: {total_issues})")
 

@@ -5,11 +5,20 @@ You are writing an article for a personal knowledge base wiki stored in an Obsid
 ## Task
 Write `wiki/concepts/<concept-name>.md` for the concept: **{{CONCEPT}}**
 
-Use only information from the sources listed below. Where the sources don't cover something, note it as a gap.
+Use only information from the sources listed below. Where the sources don't cover something, note it as a gap. Set confidence based on source coverage: `high` (multiple sources, concrete examples), `medium` (single source or limited examples), `low` (speculative or one mention).
 
 ## Format
 
 ```markdown
+---
+title: <Concept Name>
+type: concept
+tags: [tag1, tag2]
+confidence: high | medium | low
+sources: [[[sources/slug]]]
+updated: <date>
+---
+
 # <Concept Name>
 
 > One-sentence definition.
@@ -21,8 +30,8 @@ Use only information from the sources listed below. Where the sources don't cove
 - ...
 
 ## How it relates to
-- [[related-concept-1]] — explanation of relationship
-- [[related-concept-2]] — explanation of relationship
+- [[related-concept]] — explanation of relationship
+- [[related-entity]] — explanation of relationship
 
 ## Sources
 - [[sources/source-slug]] — what this source contributes

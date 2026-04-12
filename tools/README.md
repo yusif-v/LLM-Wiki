@@ -1,7 +1,7 @@
 # Tools
 
 ## lint.py
-Wiki health check. Finds dead wikilinks, unsummarized raw sources, and orphan concept pages.
+Wiki health check. Finds dead wikilinks, unsummarized raw sources, orphan pages (concepts/entities/syntheses), and low-confidence pages needing more sources.
 
 ```bash
 python tools/lint.py
