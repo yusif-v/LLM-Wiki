@@ -7,7 +7,7 @@ Wiki health check. Finds dead wikilinks, unsummarized raw sources, orphan pages 
 python tools/lint.py
 ```
 
-Pipe output to the LLM with `_prompts/lint-check.md` to update `wiki/_meta.md`.
+Pipe output to the LLM with `prompts/lint-check.md` to update `wiki/_meta.md`.
 
 ## compile.py
 Lists raw sources that don't yet have a `wiki/sources/` summary — your compile queue.

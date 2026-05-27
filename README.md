@@ -1,12 +1,14 @@
 # LLM Wiki
 
-A personal knowledge base template maintained collaboratively with Claude Code, inspired by [Andrej Karpathy's LLM Wiki concept](https://x.com/karpathy/status/1756380066580455557). Drop raw sources in, let Claude compile them into a structured, interlinked wiki — then query, synthesize, and explore.
+A personal knowledge base template maintained collaboratively with an AI coding agent, inspired by [Andrej Karpathy's LLM Wiki concept](https://x.com/karpathy/status/1756380066580455557). Drop raw sources in, let the agent compile them into a structured, interlinked wiki — then query, synthesize, and explore.
+
+Model-agnostic: works with [Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh), or any agent that reads `AGENTS.md`. The canonical instructions live in `AGENTS.md`, with `CLAUDE.md`, `GEMINI.md`, and `.cursorrules` symlinked to it.
 
 ## How it works
 
 1. **Drop** raw content (articles, papers, repos, datasets) into `raw/`
-2. **Claude compiles** each source into a summary, extracts concepts and entities, and links them together
-3. **Query** the wiki with natural language; Claude answers from the structured content
+2. **The agent compiles** each source into a summary, extracts concepts and entities, and links them together
+3. **Query** the wiki with natural language; the agent answers from the structured content
 4. **Health-check** with `python tools/lint.py` to catch dead links, orphans, and gaps
 
 The wiki lives in plain Markdown, works great in [Obsidian](https://obsidian.md) (with Dataview for live queries), and is fully readable in any editor.
@@ -40,7 +42,8 @@ outputs/
   slides/         ← generated slide decks
 
 tools/            ← Python CLI scripts
-_prompts/         ← reusable prompt templates for Claude
+prompts/        ← reusable prompt templates for the agent
+AGENTS.md       ← agent instructions (canonical; CLAUDE.md/GEMINI.md/.cursorrules symlink here)
 ```
 
 ---
@@ -49,7 +52,7 @@ _prompts/         ← reusable prompt templates for Claude
 
 ### Prerequisites
 
-- [Claude Code](https://claude.ai/code) (CLI)
+- An AI coding agent that reads `AGENTS.md` — [Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh), etc.
 - Python 3.10+ (for the tools)
 - Obsidian (optional, for Dataview dashboard)
 
@@ -74,26 +77,26 @@ No dependencies to install — the Python tools use only the standard library.
    raw/articles/the-bitter-lesson.md
    ```
 
-2. Open Claude Code and run:
+2. Open your agent and run:
    ```
    compile wiki/sources/<slug>.md from raw/papers/attention-is-all-you-need.pdf
    ```
-   Claude will use `_prompts/compile-source.md` to write the source summary, create or update any concept/entity pages, update `_index.md`, and append to `log.md`.
+   The agent will use `prompts/compile-source.md` to write the source summary, create or update any concept/entity pages, update `_index.md`, and append to `log.md`.
 
 ### Answer a research question
 
 ```
-using _prompts/qa-query.md, answer: "What is the difference between MoE and dense models?"
+using prompts/qa-query.md, answer: "What is the difference between MoE and dense models?"
 ```
 
-Claude reads the wiki and writes the answer to `outputs/queries/<slug>.md`. If the answer is worth keeping, it can be promoted to a synthesis page.
+The agent reads the wiki and writes the answer to `outputs/queries/<slug>.md`. If the answer is worth keeping, it can be promoted to a synthesis page.
 
 ### Write a concept, entity, or synthesis
 
 Use the corresponding prompt:
-- `_prompts/write-concept.md` → `wiki/concepts/<name>.md`
-- `_prompts/write-entity.md` → `wiki/entities/<name>.md`
-- `_prompts/write-synthesis.md` → `wiki/syntheses/<name>.md`
+- `prompts/write-concept.md` → `wiki/concepts/<name>.md`
+- `prompts/write-entity.md` → `wiki/entities/<name>.md`
+- `prompts/write-synthesis.md` → `wiki/syntheses/<name>.md`
 
 ### Health check
 
@@ -101,7 +104,7 @@ Use the corresponding prompt:
 python tools/lint.py
 ```
 
-Reports dead wikilinks, unsummarized sources, orphan pages, and low-confidence pages. Pipe the output to Claude with `_prompts/lint-check.md` to auto-update `wiki/_meta.md`.
+Reports dead wikilinks, unsummarized sources, orphan pages, and low-confidence pages. Pipe the output to the agent with `prompts/lint-check.md` to auto-update `wiki/_meta.md`.
 
 ### Search
 
@@ -125,13 +128,13 @@ Lists raw files that don't yet have a corresponding `wiki/sources/` summary.
 
 | Template | Purpose |
 |----------|---------|
-| `_prompts/compile-source.md` | Compile a raw file into wiki pages |
-| `_prompts/write-concept.md` | Write a new concept article |
-| `_prompts/write-entity.md` | Write a new entity page |
-| `_prompts/write-synthesis.md` | Write a comparison / synthesis |
-| `_prompts/qa-query.md` | Answer a research question from the wiki |
-| `_prompts/lint-check.md` | Interpret lint output and update `_meta.md` |
-| `_prompts/slide-gen.md` | Generate a slide deck from wiki content |
+| `prompts/compile-source.md` | Compile a raw file into wiki pages |
+| `prompts/write-concept.md` | Write a new concept article |
+| `prompts/write-entity.md` | Write a new entity page |
+| `prompts/write-synthesis.md` | Write a comparison / synthesis |
+| `prompts/qa-query.md` | Answer a research question from the wiki |
+| `prompts/lint-check.md` | Interpret lint output and update `_meta.md` |
+| `prompts/slide-gen.md` | Generate a slide deck from wiki content |
 
 ---
 
@@ -140,7 +143,7 @@ Lists raw files that don't yet have a corresponding `wiki/sources/` summary.
 - **Wikilinks** — all internal references use `[[wikilinks]]`, never bare file paths
 - **Confidence levels** — every concept, entity, and synthesis page carries a `confidence` field: `high` (multiple corroborating sources), `medium` (single source), or `low` (speculative)
 - **Activity log** — `wiki/log.md` is append-only; every ingest, query, and lint session gets an entry: `## [YYYY-MM-DD HH:MM] <action> | <title>`
-- **No hallucinated sources** — Claude only cites `[[sources/slug]]` files that actually exist in `wiki/sources/`
+- **No hallucinated sources** — the agent only cites `[[sources/slug]]` files that actually exist in `wiki/sources/`
 
 ---
 
@@ -158,7 +161,7 @@ Open the repo root as an Obsidian vault. Install the [Dataview](https://github.c
 ## Tips
 
 - **Name files as slugs** — lowercase, hyphen-separated (e.g. `attention-is-all-you-need.pdf`). The tools derive wiki slugs directly from filenames.
-- **Read `_index.md` first** — Claude is instructed to always start here, so keeping it accurate makes every query faster and more reliable.
+- **Read `_index.md` first** — the agent is instructed to always start here, so keeping it accurate makes every query faster and more reliable.
 - **Promote good query answers** — if a `outputs/queries/` answer is evergreen, move it to `wiki/syntheses/` so it gets indexed and linked.
 - **Run lint regularly** — a health score of 8+/10 means the graph is well-connected and low-confidence pages are rare.
 
@@ -166,4 +169,4 @@ Open the repo root as an Obsidian vault. Install the [Dataview](https://github.c
 
 ## Credits
 
-Concept by [Andrej Karpathy](https://x.com/karpathy). Template built with [Claude Code](https://claude.ai/code).
+Concept by [Andrej Karpathy](https://x.com/karpathy). Template designed for any AGENTS.md-compatible coding agent.
