@@ -3,7 +3,7 @@
 Append-only record of every ingest, query, lint, and synthesis session.
 
 **Format:** `## [YYYY-MM-DD HH:MM] <action> | <title>`  
-**Action types:** `ingest` · `query` · `lint` · `synthesis` · `init`
+**Action types:** `ingest` · `query` · `lint` · `synthesis` · `init` · `session-start`
 
 Quick scan: `grep "^## " wiki/log.md | tail -10`
 

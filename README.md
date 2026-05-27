@@ -65,6 +65,14 @@ cd LLM-Wiki
 
 No dependencies to install — the Python tools use only the standard library.
 
+### Quick start
+
+```bash
+python tools/start.py
+```
+
+Detects installed AI agents on your system (Claude Code, Codex, Gemini CLI, Cursor, Aider, OpenCode) and launches your pick in the project directory.
+
 ---
 
 ## Core workflows
