@@ -2,7 +2,7 @@
 
 A personal knowledge base template maintained collaboratively with an AI coding agent, inspired by [Andrej Karpathy's LLM Wiki concept](https://x.com/karpathy/status/1756380066580455557). Drop raw sources in, let the agent compile them into a structured, interlinked wiki — then query, synthesize, and explore.
 
-Model-agnostic: works with [Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Cursor](https://cursor.sh), or any agent that reads `AGENTS.md`. The canonical instructions live in `AGENTS.md`, with `CLAUDE.md`, `GEMINI.md`, and `.cursorrules` symlinked to it.
+Model-agnostic: works with any agent that reads `AGENTS.md` ([Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli), etc.).
 
 ## How it works
 
@@ -43,7 +43,7 @@ outputs/
 
 tools/            ← Python CLI scripts
 prompts/        ← reusable prompt templates for the agent
-AGENTS.md       ← agent instructions (canonical; CLAUDE.md/GEMINI.md/.cursorrules symlink here)
+AGENTS.md       ← agent instructions
 ```
 
 ---

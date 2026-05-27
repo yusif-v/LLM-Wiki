@@ -1,6 +1,6 @@
 # Agent Instructions — LLM Wiki Template
 
-This is a personal knowledge base maintained collaboratively with an AI coding agent (Claude Code, Codex, Gemini CLI, Cursor, etc.), based on the LLM Wiki pattern by Andrej Karpathy. This file is the canonical agent instruction set; `CLAUDE.md`, `GEMINI.md`, and `.cursorrules` are symlinks to it.
+This is a personal knowledge base maintained collaboratively with an AI coding agent, based on the LLM Wiki pattern by Andrej Karpathy.
 
 ## Vault structure
 
