@@ -1,0 +1,16 @@
+# OS / editor junk
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Agent plugin state (e.g. Claude Code remember plugin) — not part of the wiki
+.remember/
+.claude/
+
+# Auto-generated daily notes from external automation — intentionally excluded
+daily/

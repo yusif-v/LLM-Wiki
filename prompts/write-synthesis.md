@@ -9,6 +9,8 @@ Write `wiki/syntheses/<name>.md` comparing or analyzing: **{{TOPIC}}**
 
 Draw from the relevant wiki pages listed below. A synthesis should produce a conclusion or recommendation, not just a summary of each side.
 
+If the synthesis draws on **many** sources (dozens+), don't hold them all in context at once — layer the fan-in: summarize them in batches of 20-50, consolidate the batch summaries, then write the synthesis from the consolidated view.
+
 ## Format
 
 ```markdown

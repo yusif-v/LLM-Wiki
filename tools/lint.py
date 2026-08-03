@@ -66,6 +66,26 @@ def check_low_confidence():
     return issues
 
 
+def check_index_completeness():
+    """Every page in sources/concepts/entities/syntheses/maps must be listed in _index.md."""
+    index_path = WIKI_DIR / "_index.md"
+    if not index_path.exists():
+        return ["  wiki/_index.md missing"]
+    index_text = index_path.read_text(errors="ignore")
+    issues = []
+    for directory, label in [
+        (SOURCES_DIR, "sources"),
+        (CONCEPTS_DIR, "concepts"),
+        (ENTITIES_DIR, "entities"),
+        (SYNTHESES_DIR, "syntheses"),
+        (WIKI_DIR / "maps", "maps"),
+    ]:
+        for page in directory.glob("*.md"):
+            if page.stem not in index_text:
+                issues.append(f"  {page.relative_to(BASE)} not listed in wiki/_index.md")
+    return issues
+
+
 def main():
     print("=== Wiki Lint Report ===\n")
 
@@ -89,7 +109,12 @@ def main():
     for l in low_conf or ["  none"]:
         print(l)
 
-    total_issues = len(dead) + len(unsummarized) + len(orphans) + len(low_conf)
+    unindexed = check_index_completeness()
+    print(f"\nMissing from _index.md ({len(unindexed)}):")
+    for u in unindexed or ["  none"]:
+        print(u)
+
+    total_issues = len(dead) + len(unsummarized) + len(orphans) + len(low_conf) + len(unindexed)
     score = max(0, 10 - total_issues)
     print(f"\nHealth score: {score}/10  (issues found: {total_issues})")
 

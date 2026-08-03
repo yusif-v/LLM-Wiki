@@ -8,8 +8,9 @@ Model-agnostic: works with any agent that reads `AGENTS.md` ([Claude Code](https
 
 1. **Drop** raw content (articles, papers, repos, datasets) into `raw/`
 2. **The agent compiles** each source into a summary, extracts concepts and entities, and links them together
-3. **Query** the wiki with natural language; the agent answers from the structured content
-4. **Health-check** with `python tools/lint.py` to catch dead links, orphans, and gaps
+3. **The source is consumed** — moved from `raw/` to `archive/`, so `raw/` always shows exactly what's still unprocessed
+4. **Query** the wiki with natural language; the agent answers from the structured content
+5. **Health-check** with `python tools/lint.py` to catch dead links, orphans, missing index entries, and gaps
 
 The wiki lives in plain Markdown, works great in [Obsidian](https://obsidian.md) (with Dataview for live queries), and is fully readable in any editor.
 
@@ -24,6 +25,8 @@ raw/
   repos/          ← code repositories, READMEs
   datasets/       ← structured data, CSVs
   images/         ← screenshots, diagrams, figures
+
+archive/          ← consumed originals, moved here after ingestion (keeps provenance)
 
 wiki/
   _index.md       ← master index: ALL content listed here
@@ -89,7 +92,9 @@ Detects installed AI agents on your system (Claude Code, Codex, Gemini CLI, Curs
    ```
    compile wiki/sources/<slug>.md from raw/papers/attention-is-all-you-need.pdf
    ```
-   The agent will use `prompts/compile-source.md` to write the source summary, create or update any concept/entity pages, update `_index.md`, and append to `log.md`.
+   The agent will use `prompts/compile-source.md` to write the source summary, create or update any concept/entity pages, update `_index.md`, move the original to `archive/` (the **consume** step), and append to `log.md`.
+
+> **Lifecycle:** inbox (`raw/`) → ingest (summarize + link) → consumed (`archive/`). `raw/` holds only unprocessed files, so `python tools/compile.py` is always a true to-do list.
 
 ### Answer a research question
 
@@ -112,7 +117,7 @@ Use the corresponding prompt:
 python tools/lint.py
 ```
 
-Reports dead wikilinks, unsummarized sources, orphan pages, and low-confidence pages. Pipe the output to the agent with `prompts/lint-check.md` to auto-update `wiki/_meta.md`.
+Reports dead wikilinks, unsummarized sources, orphan pages, pages missing from `_index.md`, and low-confidence pages. Pipe the output to the agent with `prompts/lint-check.md` to auto-update `wiki/_meta.md`.
 
 ### Search
 
@@ -128,7 +133,7 @@ Full-text search across all wiki files — useful before writing a new concept t
 python tools/compile.py
 ```
 
-Lists raw files that don't yet have a corresponding `wiki/sources/` summary.
+Lists raw files that don't yet have a corresponding `wiki/sources/` summary. Because consumed files are moved to `archive/`, this is exactly the set of sources still waiting to be ingested.
 
 ---
 
@@ -150,7 +155,8 @@ Lists raw files that don't yet have a corresponding `wiki/sources/` summary.
 
 - **Wikilinks** — all internal references use `[[wikilinks]]`, never bare file paths
 - **Confidence levels** — every concept, entity, and synthesis page carries a `confidence` field: `high` (multiple corroborating sources), `medium` (single source), or `low` (speculative)
-- **Activity log** — `wiki/log.md` is append-only; every ingest, query, and lint session gets an entry: `## [YYYY-MM-DD HH:MM] <action> | <title>`
+- **Activity log** — `wiki/log.md` is append-only; every ingest, consume, query, and lint session gets an entry: `## [YYYY-MM-DD HH:MM] <action> | <title>`
+- **Consume every source** — after a summary is written, the original moves from `raw/` to `archive/`; `raw/` never holds processed files
 - **No hallucinated sources** — the agent only cites `[[sources/slug]]` files that actually exist in `wiki/sources/`
 
 ---

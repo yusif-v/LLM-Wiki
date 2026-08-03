@@ -8,7 +8,11 @@ Given the raw source document below, do the following:
 2. Identify which existing `wiki/concepts/*.md` and `wiki/entities/*.md` files this source links to. Add backlinks.
 3. Identify concepts and entities NOT yet in the wiki that this source introduces. Create them.
 4. Update `wiki/_index.md` — add rows to the Sources, Concepts, and Entities tables as needed.
-5. Append an entry to `wiki/log.md`.
+5. Append an entry to `wiki/log.md` with action `consume`.
+6. **Consume the source**: move the raw file from `raw/` to `archive/` (keep its slug filename), and update the `**Original:**` field in the summary to the new `archive/<slug>.<ext>` path. `raw/` must stay empty of consumed files — it only holds unprocessed inbox items.
+
+> Lifecycle: **inbox (`raw/`) → ingest (write summary + link) → consumed (`archive/`)**.
+> Move the file with `mv`, or `git mv` if it is tracked. Never leave a consumed file in `raw/`.
 
 ## Format for `wiki/sources/<slug>.md`
 

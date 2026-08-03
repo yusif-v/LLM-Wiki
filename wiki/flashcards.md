@@ -5,7 +5,7 @@ Spaced repetition cards for the [Spaced Repetition](https://github.com/st3v3nmw/
 **Format:** question, then `?` on its own line, then answer. Separate cards with a blank line.
 
 Ask the LLM to generate cards from any wiki page:
-> "Generate flashcards from [[concepts/concept-name]]"
+> "Generate flashcards from the wiki page on `<concept-name>`"
 
 ---
 
